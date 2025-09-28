@@ -11,7 +11,7 @@ exports.registerUser = async (req, res) => {
         return res.status(400).json({ message: "Request body is missing or invalid" });
     }
 
-    const { email, password } = req.body;
+    const { fullName, email, password, profileImageUrl } = req.body;
 
     if( !email || !password){
         return res.status(400).json({ message: "Please provide all required fields" });

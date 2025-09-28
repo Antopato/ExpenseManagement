@@ -3,7 +3,7 @@ export const BASE_URL = "http://localhost:8000";
 export const API_PATHS = {
     AUTH: {
         LOGIN: "/api/auth/login",
-        SIGNUP: "/api/auth/signup",
+        SIGNUP: "/api/auth/register",
         GET_USER_INFO: "/api/auth/user",
     },
     DASHBOARD: {

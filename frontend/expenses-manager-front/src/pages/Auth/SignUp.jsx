@@ -1,26 +1,31 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import AuthLayout from '../../components/layouts/AuthLayout';
 import ProfilePhotoSelector from '../../components/inputs/ProfilePhotoSelector';
 import {Link, useNavigate} from 'react-router-dom';
 import Input from '../../components/inputs/input';
 import { validateEmail } from '../../utils/helper';
+import axiosInstance from '../../utils/axiosInstance';
+import { API_PATHS } from '../../utils/apiPaths';
+import { UserContext } from '../../context/userContext';
+import uploadImage from '../../utils/uploadImage';
 
 const SignUp = () => {
     const [profilePic, setProfilePic] = useState(null);
-    const [name, setName] = useState("");
+    const [fullName, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState(null);
 
+    const {updateUser} = useContext(UserContext);
+
     const navigate = useNavigate();
 
     const handleSignUp = async (e) => {
         e.preventDefault(); 
-
         let profileImageUrl = "";
 
-        if(!name){
+        if(!fullName){
             setError("Please enter your full name");
             return;
         }
@@ -45,7 +50,35 @@ const SignUp = () => {
             return;
         }
 
-    
+        setError("");
+
+        try {
+            if (profilePic) {
+                const imgUploadRes = await uploadImage(profilePic);
+                profileImageUrl = imgUploadRes.imageUrl || "";
+            }
+
+            const response = await axiosInstance.post(API_PATHS.AUTH.SIGNUP,{
+                fullName: fullName,
+                email: email,
+                password: password,
+                profileImageUrl: profileImageUrl
+            });
+
+            const { token, user } = response.data;
+
+            if(token){
+                localStorage.setItem("token", token);
+                updateUser(user);
+                navigate("/home");
+            }
+        } catch (error) {
+            if ( error.response && error.response.data.message){
+                setError(error.response.data.message)
+            }else{
+                setError("Something went wrong. Please try again")
+            }
+        }
     }
     
     return(
@@ -62,7 +95,7 @@ const SignUp = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                         <Input
-                            value={name}
+                            value={fullName}
                             onChange={({ target }) => setName(target.value)}
                             placeholder="John Doe"
                             label="Full Name"
