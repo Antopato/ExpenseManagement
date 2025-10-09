@@ -47,7 +47,7 @@ const LogIn = () => {
             if(error.response && error.response.data && error.response.data.message){
                 setError(error.response.data.message);
             } else {
-                setError("An error occurred. Please try again later.");
+                setError("An error occurred. Please try again later, server might be down.");
             }
         }
     };
