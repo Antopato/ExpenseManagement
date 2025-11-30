@@ -1,5 +1,5 @@
-export const BASE_URL = "https://expensemanagement-is8w.onrender.com"; //PRODUCTION
-//export const BASE_URL = "https://localhost:8000";  //DEVELOP
+//export const BASE_URL = "https://expensemanagement-is8w.onrender.com"; //PRODUCTION
+export const BASE_URL = "http://localhost:8000";  //DEVELOP
 
 export const API_PATHS = {
     AUTH: {

@@ -32,10 +32,12 @@ const LogIn = () => {
         setError("");
 
         try{
+            
             const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN,{
                 email,
                 password
             })
+            
             const { token, user } = response.data;
 
             if(token){
