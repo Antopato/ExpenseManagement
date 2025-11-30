@@ -1,4 +1,4 @@
-const { isValidObjectId } = require("mongoose");
+const { isValidObjectId, Types } = require("mongoose");
 const Expense = require("../models/Expense")
 const Income = require("../models/Income")
 
@@ -19,12 +19,15 @@ exports.getDashboardData = async (req, res) =>{
             { $group: {_id: null, total: { $sum: "$amount"}}},
         ])
 
+        console.log("totalExpense", {totalExpense, userId: isValidObjectId(userId)});
+
+
         const last60DaysIncomeTransactions = await Income.find({
             userId,
-            date: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)},
+            date: { $gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000)},
         }).sort({ date: -1 })
 
-        const incomeLast60Days = last600DaysIncomeTransactions.reduce(
+        const incomeLast60Days = last60DaysIncomeTransactions.reduce(
             (sum, transaction) => sum + transaction.amount,
             0
         )
@@ -34,19 +37,19 @@ exports.getDashboardData = async (req, res) =>{
             date: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)},
         }).sort({ date: -1 })
 
-        const expenseLast30Days = last600DaysIncomeTransactions.reduce(
+        const expenseLast30Days = last30DaysExpenseTransactions.reduce(
             (sum, transaction) => sum + transaction.amount,
             0
         )
 
         const lastTransactions = [
-            ...(await Income.find({ userId })).toSorted({ date: -1 }.limit(5)).map(
+            ...(await Income.find({ userId }).sort({ date: -1 }).limit(5)).map(
                 (txn) => ({
                     ...txn.toObject(),
                     type:"income",
                 })
             ),
-            ...(await Expense.find({ userId })).toSorted({ date: -1 }.limit(5)).map(
+            ...(await Expense.find({ userId }).sort({ date: -1 }).limit(5)).map(
                 (txn) => ({
                     ...txn.toObject(),
                     type:"expense",
@@ -56,9 +59,9 @@ exports.getDashboardData = async (req, res) =>{
 
         res.json({
             totalBalance:
-                (totalIncome[0]?.total || 0 - (totalExpense[0]?.total || total)),
-            totalIncome: totalIncome[0]?.total || 0,
-            totalExpense: totalExpense[0]?.total || 0,
+                (totalIncome[0]?.total || 0 - (totalExpense[0]?.total || 0)),
+            totalIncome: totalIncome[0]?.total || 1,
+            totalExpense: totalExpense[0]?.total || 1,
             last30DaysExpenses: {
                 total: expenseLast30Days,
                 transactions: last30DaysExpenseTransactions,
@@ -71,5 +74,6 @@ exports.getDashboardData = async (req, res) =>{
         })
     }catch(error) {
         res.status(500).json({ message: "Server error: "+ error})
+        console.log(error)
     }
 }
