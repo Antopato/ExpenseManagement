@@ -1,5 +1,6 @@
 import React from "react";
 import {LuArrowRight} from "react-icons/lu";
+import TransactionInfoCard from "../Cards/TransactionInfoCard";
 
 const RecentTransactions = ({ transactions, onSeeMore }) => {
     return(
@@ -11,6 +12,20 @@ const RecentTransactions = ({ transactions, onSeeMore }) => {
                     See More <LuArrowRight className="ml-1"/>
                 </button>
             </div>
+
+            <div className="mt-6">
+            {transactions?.slice(0,5).map((item) => (
+                <TransactionInfoCard
+                    key={item.id}
+                    title={item.title == "expense" ? item.category : item.source}
+                    icon={item.icon}
+                    date={FaMonument(item.date).format("DD MM, YYYY")}
+                    amount={item.amount}
+                    type={item.type}
+                    hideDeleteBtn
+                />
+            ))}
+        </div>
         </div>
     )
 }
