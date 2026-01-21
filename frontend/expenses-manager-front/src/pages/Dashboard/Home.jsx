@@ -98,7 +98,7 @@ const Home = () => {
             totalIncome={dashboardData?.totalIncome || 0}
           />
           <RecentIncome
-            transactions={dashboardData?.recentIncome?.transactions || []}
+            transactions={dashboardData?.last60DaysIncome?.transactions?.slice(0,4) || []}
             onSeeMore={() => navigate("/income")}
           />
 

@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const validateEmail = (email) => {
     //const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return true;
@@ -24,6 +26,8 @@ export const addThousandsSeparators = (num) =>{
 
     return fractionalPart ? `${formattedInteger}.${fractionalPart}` : formattedInteger;
 }
+
+
 
 export const prepareExpenseBarChartData = (data = []) => {
     const chartData = data.map((item) => ({

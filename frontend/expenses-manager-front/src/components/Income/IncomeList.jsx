@@ -1,20 +1,22 @@
+import { LuDownload } from "react-icons/lu";
 import React from "react";
-import { LuArrowRight } from "react-icons/lu";
-import TransactionInfoCard from "../../components/Cards/TransactionInfoCard";
+import TransactionInfoCard from "../Cards/TransactionInfoCard";
 import moment from "moment";
 
-const RecentIncome = ({transactions, onSeeMore}) => {
-    return ( 
+const IncomeList = ({transactions, onDelete, onDownload}) => {
+    return(
         <div className="card">
             <div className="flex items-center justify-between">
-                <h5 className="text-lg">Income</h5>
+                <h5 className="text-lg">Income list</h5>
 
-                <button className="card-btn" onClick={onSeeMore}>
-                    See All <LuArrowRight className="text-base" />
+                <button className="card-btn" onClick={onDownload}>
+                    <LuDownload className="text-base">
+                        Download
+                    </LuDownload>
                 </button>
             </div>
 
-            <div className="mt-6">
+            <div className="grid grid-cols-1 md:grid-col-2">
                 {transactions.map((income) => (
                     <TransactionInfoCard
                         key={income._id}
@@ -29,6 +31,6 @@ const RecentIncome = ({transactions, onSeeMore}) => {
             </div>
         </div>
     )
-};
+}
 
-export default RecentIncome;
+export default IncomeList;
