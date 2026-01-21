@@ -1,6 +1,7 @@
 import React from "react";
 import {LuArrowRight} from "react-icons/lu";
 import TransactionInfoCard from "../Cards/TransactionInfoCard";
+import { FaMonument } from "react-icons/fa";
 
 const RecentTransactions = ({ transactions, onSeeMore }) => {
     return(
@@ -19,7 +20,7 @@ const RecentTransactions = ({ transactions, onSeeMore }) => {
                     key={item.id}
                     title={item.title == "expense" ? item.category : item.source}
                     icon={item.icon}
-                    date={FaMonument(item.date).format("DD MM, YYYY")}
+                    date={FaMonument(item.date)}
                     amount={item.amount}
                     type={item.type}
                     hideDeleteBtn

@@ -3,6 +3,9 @@ import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from "../../utils/apiPaths";
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import IncomeOverview from '../../components/Income/IncomeOverview';
+import Modal from '../../components/Modal';
+import AddIncomeForm from '../../components/Income/AddIncomeForm';
+import toast from 'react-hot-toast';
 
 const Income = () => {
   const [incomeData, setIncomeData] = useState([]);
@@ -32,7 +35,42 @@ const Income = () => {
     }
   };
 
-  const handleAddIncome = async (income) => {};
+  const handleAddIncome = async (income) => {
+    const { source, amount, date, icon } = income;
+
+    if(!source.trim()){
+      toast.error("Please provide income source");
+      return;
+    }
+
+    if(!amount || isNaN(amount) || Number(amount) <= 0){
+      toast.error("Please provide a valid income amount");
+      return;
+    }
+
+    if(!date){
+      toast.error("Please select income date");
+      return;
+    }
+
+    try {
+      await axiosInstance.post(API_PATHS.INCOME.ADD_INCOME, {
+        source,
+        amount,
+        date,
+        icon,
+      });
+
+      setOpenAddIncomeModal(false);
+      toast.success("Income added successfully");
+      fetchIncomeData();
+    }catch (error) {
+      console.error(
+        "Error adding income:",
+        error.response?.data?.message || error.message
+      )
+    }
+  };
 
   const deleteIncome = async (id) => {};
 
@@ -60,9 +98,7 @@ const Income = () => {
           onClose={() => setOpenAddIncomeModal(false)}
           tittle="Add Income"
         >
-        <div>
-          
-        </div>
+          <AddIncomeForm onAddIncome={handleAddIncome}/>
         </Modal>
       </div>
     </DashboardLayout>

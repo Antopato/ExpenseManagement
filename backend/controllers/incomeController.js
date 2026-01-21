@@ -15,7 +15,8 @@ exports.addIncome = async (req, res) =>{
             return res.status(400).json({ message: "Please provide all required fields" });
         }
 
-        const newIncome = Income.create({ 
+        // create instance and save so we call save() on the document
+        const newIncome = new Income({ 
             userId,
             icon, 
             source, 
@@ -23,7 +24,7 @@ exports.addIncome = async (req, res) =>{
             date : new Date(date)
         });
 
-        await newIncome.save()
+        await newIncome.save();
         res.status(200).json(newIncome);
 
     } catch (error) {
@@ -36,7 +37,7 @@ exports.getAllIncome = async (req, res) =>{
     const userId = req.user.id
     
     try{
-        const income = (await Income.find({ userId })).sort({ date: -1 });
+        const income = await Income.find({ userId }).sort({ date: -1 });
         res.json(income);
     }catch(error){
         res.status(500).json({ message: "Server error: " + error})
@@ -56,7 +57,7 @@ exports.downloadExcel = async (req, res) =>{
     const userId = req.user.id;
 
     try{
-        const income = (await Income.find({ userId })).toSorted({ date: -1 });
+        const income = await Income.find({ userId }).sort({ date: -1 });
 
         const data = income.map((item) => ({
             Source: item.source,
