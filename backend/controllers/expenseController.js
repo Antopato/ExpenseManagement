@@ -10,20 +10,20 @@ exports.addExpense = async (req, res) =>{
         
         try {
             const { icon, category, amount, date } = req.body;
-    
+
             if( !category || !amount || !date){
                 return res.status(400).json({ message: "Please provide all required fields" });
             }
-    
-            const newExpense =  Expense.create({ 
+
+            const newExpense = new Expense({ 
                 userId,
                 icon, 
                 category, 
                 amount,
                 date : new Date(date)
             });
-    
-            await newExpense.save()
+
+            await newExpense.save();
             res.status(200).json(newExpense);
     
         } catch (error) {
@@ -36,7 +36,7 @@ exports.getAllExpense = async (req, res) =>{
     const userId = req.user.id
         
         try{
-            const expense = (await Expense.find({ userId })).sort({ date: -1 });
+            const expense = await Expense.find({ userId }).sort({ date: -1 });
             res.json(expense);
         }catch(error){
             res.status(500).json({ message: "Server error: " + error})
@@ -56,8 +56,8 @@ exports.downloadExcel = async (req, res) =>{
     const userId = req.user.id;
     
         try{
-            const expense = (await Expense.find({ userId })).toSorted({ date: -1 });
-    
+            const expense = await Expense.find({ userId }).sort({ date: -1 });
+
             const data = expense.map((item) => ({
                 Category: item.category,
                 Amount: item.amount,

@@ -90,7 +90,7 @@ const Home = () => {
             />
 
           <Last30DaysExpenses
-            data={dashboardData?.last30DaysIncome?.transactions || []}
+            data={dashboardData?.last30DaysExpenses?.transactions || []}
           />
 
           <RecentIncomeWithChart
